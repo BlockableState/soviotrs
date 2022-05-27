@@ -1,0 +1,3 @@
+ Some(MtNode { sig: "c0254018d1820238324c0c07f1bdd45a1253eabc0dfd7454e582d0f28839d5fd", 
+    left: MtNode { sig: "33b675636da5dcc86ec847b38c08fa49ff1cace9749931e0a5d4dfdbdedd808a", left: Leaf("1"), right: Leaf("2") }, 
+    right: MtNode { sig: "33b675636da5dcc86ec847b38c08fa49ff1cace9749931e0a5d4dfdbdedd808a", left: Leaf("1"), right: Leaf("2") } })
