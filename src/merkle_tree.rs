@@ -14,7 +14,7 @@ pub enum MerkleTree<T: DG + Clone> {
     },
 }
 
-pub fn from_list<T: DG + Clone>(s: Vec<String>) -> Option<MerkleTree<T>> {
+pub fn from_list<T: DG + Clone>(s: Vec<String>) -> MerkleTree<T> {
     let xs: Vec<MerkleTree<T>> = s.iter().map(|x| MerkleTree::Leaf(x.clone())).collect();
     let levels = (xs.len() as f32).log2().ceil() as usize;
     let x = successors(Some(xs), go_up);
@@ -22,7 +22,7 @@ pub fn from_list<T: DG + Clone>(s: Vec<String>) -> Option<MerkleTree<T>> {
         .skip(levels)
         .next()
         .and_then(|x| x.iter().next().map(MerkleTree::clone));
-    return y;
+    return y.unwrap();
 }
 
 fn go_up<'a, T: DG + Clone>(xs: &Vec<MerkleTree<T>>) -> Option<Vec<MerkleTree<T>>> {

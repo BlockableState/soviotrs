@@ -72,22 +72,12 @@ fn main() {
     // let str_list = vec![String::from("1")];
     let cks: Vec<&[String]> = str_list.chunks(2).collect();
     println!("Debug: {:?}", cks);
-    let a: Option<MerkleTree<DGSha256>> = merkle_tree::from_list(str_list);
+    let a: MerkleTree<DGSha256> = merkle_tree::from_list(str_list);
     println!(
         "Debug: {:?}",
-        a.clone().map(|x| x.verify())
+        a.verify()
     );
-    println!( "Debug: verifying head:{:?} all:{:?}", a.clone().map(|x| x.verify()), a.clone().map(|x| x.verify_all()));
-    // let a = Some(1);
-    // let x = a.fmap(|a|a +1);
-    // println!("Debug: {:?}", x);
-
-    // create a Sha256 object
-    // let mut hasher = Sha256::new();
-
-    // write input message
-    // hasher.input_str("hello world");
-
+    println!( "Debug: verifying head:{:?} all:{:?}", a.verify(), a.verify_all()) 
     // read hash digest
     // let hex = hasher.result_str();
     // println!("{}", hex);
