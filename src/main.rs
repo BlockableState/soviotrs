@@ -1,5 +1,6 @@
 mod merkle_tree;
 mod signed;
+mod block_chain;
 mod util;
 mod verifiable;
 use std::iter::successors;
@@ -73,11 +74,8 @@ fn main() {
     let cks: Vec<&[String]> = str_list.chunks(2).collect();
     println!("Debug: {:?}", cks);
     let a: MerkleTree<DGSha256> = merkle_tree::from_list(str_list);
-    println!(
-        "Debug: {:?}",
-        a.verify()
-    );
-    println!( "Debug: verifying head:{:?} all:{:?}", a.verify(), a.verify_all()) 
+    println!( "Debug: {:?}", a.verify());
+    println!( "Debug: verifying :{:?} ", a.verify()) 
     // read hash digest
     // let hex = hasher.result_str();
     // println!("{}", hex);
