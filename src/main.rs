@@ -2,7 +2,6 @@ mod merkle_tree;
 mod signed;
 mod util;
 mod verifiable;
-mod Signed;
 use std::iter::successors;
 
 use crate::{merkle_tree::MerkleTree, util::DGSha256, verifiable::Verifiable};
@@ -75,10 +74,10 @@ fn main() {
     println!("Debug: {:?}", cks);
     let a: Option<MerkleTree<DGSha256>> = merkle_tree::from_list(str_list);
     println!(
-        "Debug: verifying {:?} {:?}",
-        a.clone(),
-        a.map(|x| x.verify())
+        "Debug: {:?}",
+        a.clone().map(|x| x.verify())
     );
+    println!( "Debug: verifying head:{:?} all:{:?}", a.clone().map(|x| x.verify()), a.clone().map(|x| x.verify_all()));
     // let a = Some(1);
     // let x = a.fmap(|a|a +1);
     // println!("Debug: {:?}", x);

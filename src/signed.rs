@@ -1,6 +1,6 @@
 use crate::{
     merkle_tree::MerkleTree,
-    util::{DG},
+    util::DG,
 };
 
 pub trait Signed<T> {
