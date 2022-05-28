@@ -1,6 +1,6 @@
 use crate::{
     merkle_tree::MerkleTree,
-    util::{hash, DG},
+    util::{DG},
 };
 
 pub trait Signed<T> {
@@ -21,8 +21,8 @@ impl<T: DG + Clone> Signed<T> for MerkleTree<T> {
     }
 }
 
-impl<T: DG + Clone> Signed<T> for String {
+impl<T: DG> Signed<T> for String {
     fn signature(&self) -> String {
-        return hash::<T>(self);
+        return T::hash(self);
     }
 }

@@ -1,10 +1,6 @@
 use crypto::digest::Digest;
 use crypto::sha2::Sha256;
 
-pub fn hash<T: DG>(input: &str) -> String {
-    return T::hash(input);
-}
-
 #[derive(Clone, Debug)]
 pub struct DGSha256 {}
 // type DGSha256 = ();

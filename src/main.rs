@@ -2,6 +2,7 @@ mod merkle_tree;
 mod signed;
 mod util;
 mod verifiable;
+mod Signed;
 use std::iter::successors;
 
 use crate::{merkle_tree::MerkleTree, util::DGSha256, verifiable::Verifiable};
