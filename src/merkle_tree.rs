@@ -1,28 +1,30 @@
 use std::{iter::{successors}};
-use crate::util::{hash};
+use crate::util::{hash, DG};
+use std::marker::PhantomData;
 
 
 #[derive(Clone, Debug)]
-pub enum MerkleTree {
+pub enum MerkleTree<T: DG + Clone> {
     Leaf(String),
     MtNode {
+        _hash_type: PhantomData<T>, // use to bound hash type
         sig: String,
-        left: Box<MerkleTree>,
-        right: Box<MerkleTree>
+        left: Box<MerkleTree<T>>,
+        right: Box<MerkleTree<T>>
     },
 }
 
 
-pub fn from_list(s: Vec<String>) -> Option<MerkleTree> {
-    let xs: Vec<MerkleTree> = s.iter().map(|x| MerkleTree::Leaf(x.clone())).collect();
+pub fn from_list<T:DG+Clone>(s: Vec<String>) -> Option<MerkleTree<T>> {
+    let xs: Vec<MerkleTree<T>> = s.iter().map(|x| MerkleTree::Leaf(x.clone())).collect();
     let levels = (xs.len() as f32).log2().ceil() as usize ;
     let x = successors(Some(xs), go_up);
-    let y = x.skip(levels).next().and_then(|x| x.iter().next().map(MerkleTree:: clone));
+    let y = x.skip(levels).next().and_then(|x| x.iter().next().map(MerkleTree :: clone));
     return y
 }
 
-fn go_up<'a>(xs:&Vec<MerkleTree>) -> Option<Vec<MerkleTree>>  {
-    let ps: Vec<MerkleTree> = xs.chunks(2).map(|xs| {
+fn go_up<'a, T:DG+Clone>(xs:&Vec<MerkleTree<T>>) -> Option<Vec<MerkleTree<T>>>  {
+    let ps: Vec<MerkleTree<T>> = xs.chunks(2).map(|xs| {
         return xs.get(0).
             zip(xs.get(1).or(Some(&MerkleTree::Leaf(String::new()))))
             .and_then(|(x, y)| Some(merge(x, y)))
@@ -31,16 +33,17 @@ fn go_up<'a>(xs:&Vec<MerkleTree>) -> Option<Vec<MerkleTree>>  {
     return Some(ps);
 }
 
-pub fn get_sig(t: & MerkleTree) -> String {
+pub fn get_sig<T:DG+Clone>(t: & MerkleTree<T>) -> String {
     match t {
-        MerkleTree::Leaf(x) => hash(&x),
-        MerkleTree::MtNode{sig, right: _, left: _ } => String::from(sig)
+        MerkleTree::Leaf(x) => hash::<T>(&x),
+        MerkleTree::MtNode{ _hash_type: PhantomData,sig, right: _, left: _ } => String::from(sig)
     }
 }
 
-pub fn merge<'a>(t:  &MerkleTree, u: &MerkleTree) -> MerkleTree {
+pub fn merge<'a, T:DG+Clone>(t:  &MerkleTree<T>, u: &MerkleTree<T>) -> MerkleTree<T> {
     return MerkleTree::MtNode {
-        sig: hash(&(get_sig(&t) + &get_sig(&u))),
+        _hash_type: PhantomData,
+        sig: hash::<T>(&(get_sig(&t) + &get_sig(&u))),
         left: Box::new(t.clone()),
         right: Box::new(u.clone())
     };

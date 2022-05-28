@@ -3,6 +3,54 @@ mod verify_able;
 mod util;
 use std::iter::successors;
 
+use crypto::sha2::Sha256;
+
+use crate::{merkle_tree::MerkleTree, util::DGSha256};
+// use functional::{Functor, control::Functor};
+
+pub trait Generic1 {
+    type Type;
+}
+
+impl<T> Generic1 for Option<T> {
+    type Type = T;
+}
+pub trait Rebind1<Y> : Generic1 {
+    type Type;
+}
+
+impl<T, Y> Rebind1<Y> for Option<T> {
+    type Type = Option<Y>;
+}
+
+pub trait Functor: Generic1 {
+    fn fmap<Y, F: Fn(<Self as Generic1>::Type)->Y>(self, f: F) -> <Self as Rebind1<Y>>::Type where Self: Rebind1<Y>;
+}
+
+// impl<T> Functor for Option<T> {
+//     fn fmap<Y, F: Fn(T)->Y>(self, f: F) -> Option<Y> {
+//         match self {
+//             Some(value) => Some(f(value)),
+//             None => None
+//         }
+//     }
+// }
+
+// pub trait Functor: Generic1 {
+//     fn fmap<F: Fn(<Self as Generic1>::Type)->Self>(self, f: F) -> Self;
+// }
+
+impl<T> Functor for Option<T> {
+    fn fmap<Y, F: (Fn(<Option<T> as Generic1>::Type)->Y) > (self, f: F) -> <Option<T> as Rebind1<Y>> :: Type {
+        match self {
+            Some(value) => Some(f(value)),
+            None => None
+        }
+    }
+}
+
+
+// generic1!(Option);
 
 
 fn main() {
@@ -13,10 +61,12 @@ fn main() {
     // let str_list = vec![String::from("1")];
     let cks: Vec<&[String]> = str_list.chunks(2).collect();
     println!("Debug: {:?}", cks);
-    let a = merkle_tree::from_list(str_list);
+    let a: Option<MerkleTree<DGSha256>> = merkle_tree::from_list(str_list);
     println!("Debug: {:?}", a);
-
-
+    let a = Some(1);
+    let x = a.fmap(|a|a +1);
+    println!("Debug: {:?}", x);
+    
 // create a Sha256 object
     // let mut hasher = Sha256::new();
 
